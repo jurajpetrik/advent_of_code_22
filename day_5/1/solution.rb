@@ -13,7 +13,7 @@ stacks = []
 lines = []
 moves = []
 reading_stacks = true
-indices = []
+indices = [] #the first element is the column index at this the first column's symbol is in each row
 
 File.open('input').each do |line|
   if reading_stacks
@@ -32,19 +32,10 @@ File.open('input').each do |line|
     next if line.strip == ""
     words = line.split(" ")
     amount = words[1].to_i
-    from = words[3].to_i
-    to = words[5].to_i
+    from = words[3].to_i - 1 # 0 index it
+    to = words[5].to_i - 1 # 0 index it
     moves << {from: from, to: to, amount: amount}
   end
-  # line = line[0..line.length-2] # drop trailing newline
-  # stacks_in_line = line.length / 4 + 1 # 4 chars per item in the input
-  # items = []
-  # pointer = 1
-  # while pointer < line.length
-  #   items << line[pointer]
-  #   pointer += 4
-  # end
-  # stacks << items
 end
 
 
@@ -56,5 +47,12 @@ lines.reverse.each do |line|
     stacks[index_of_stack] << item_symbol if item_symbol != " " && item_symbol != nil
   end
 end
-pp stacks
-binding.pry moves
+
+### play out moves
+moves.each do |move|
+  move[:amount].times { stacks[move[:to]].push(stacks[move[:from]].pop)}
+end
+
+result = ""
+stacks.each{|s| result += s.last}
+pp result
