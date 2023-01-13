@@ -3,17 +3,16 @@ require 'pry'
 
 class Buffer
   attr_reader :index
-  Length = 4
-  @chars
 
-  def initialize
+  def initialize(length = 4)
     @chars = []
     @index = 0
+    @length = length
   end
 
   def push(char)
     @index += 1
-    if @chars.length < Length
+    if @chars.length < @length
       @chars.push(char)
     else
       @chars = @chars[1..-1] + [char]
@@ -21,7 +20,7 @@ class Buffer
   end
 
   def marker_found?
-    @chars.length == Length && @chars.uniq.length == Length
+    @chars.length == @length && @chars.uniq.length == @length
   end
 end
 
