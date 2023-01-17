@@ -60,7 +60,7 @@ def parse_command(command, response)
         @active_folder = Folder.new(folder_name)
         @root = @active_folder
     else
-      @active_folder = @active_folder.folders.first {|f| f.name == folder_name}
+      @active_folder = @active_folder.folders.find {|f| f.name == folder_name}
     end
   end
   if command_parts.first == "ls"
