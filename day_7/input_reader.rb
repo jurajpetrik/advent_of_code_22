@@ -1,3 +1,6 @@
+require_relative 'folder'
+require_relative 'file'
+
 class InputReader
   def initialize
     @active_command = nil

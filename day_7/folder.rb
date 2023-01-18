@@ -23,10 +23,15 @@ class Folder
 
   def size
     file_size =
+    # remember size once you've calculated it
     @size ||=
       self.files.reduce(0) {|sum, f| sum + f.size}  +
       self.folders.reduce(0) {|sum, f| sum + f.size}
   end
+
+  private
+
+  # these are just for debugging purposes
 
   def pretty_name
     return name if parent_folder.nil?

@@ -1,7 +1,5 @@
 #!/usr/bin/ruby
-require_relative 'file'
-require_relative 'folder'
-require_relative 'input_reader'
+require_relative '../input_reader'
 
 def find_folder_to_delete(needed_space, folder)
   return nil if folder.size < needed_space
