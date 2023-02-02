@@ -1,6 +1,5 @@
 #!/usr/bin/ruby
 
-require 'pry'
 require 'set'
 
 lines = File.readlines('input', chomp: true)
@@ -11,48 +10,44 @@ positions_visited = Set.new
 positions_visited.add(tail_position)
 
 def move_tail(head_position, tail_position)
+  new_tail_position = tail_position.clone
+
   #react to new head position
-
-  # if same position, do nothing
-  # if off by 2 in non diagonal direction, move to be off by one
-
-  # THERE GOTTA BE A BETTER WAY
-
   # same X coordinate
   if head_position[0] == tail_position[0]
     if head_position[1] - tail_position[1] == 2
       # head is 2 positions below tail
-      tail_position = [tail_position[0], tail_position[1] + 1]
+      new_tail_position = [tail_position[0], tail_position[1] + 1]
     elsif head_position[1] - tail_position[1] == -2
       # head is 2 positions above tail
-      tail_position = [tail_position[0], tail_position[1] - 1]
+      new_tail_position = [tail_position[0], tail_position[1] - 1]
     end
   # same Y coordinate
   elsif head_position[1] == tail_position[1]
     # head is 2 positions to the left of tail
     if head_position[0] - tail_position[0] == -2
-      tail_position = [tail_position[0]-1, tail_position[1]]
+      new_tail_position = [tail_position[0]-1, tail_position[1]]
     # head is 2 positions to the right of tail
     elsif  head_position[0] - tail_position[0] == 2
-      tail_position = [tail_position[0]+1, tail_position[1]]
+      new_tail_position = [tail_position[0]+1, tail_position[1]]
     end
 
   # different X and Y coordinates, not touching
-  elsif (head_position[0] - tail_position[0]).abs == 2 || (head_position[0] - tail_position[0]).abs == 2
+  elsif (head_position[0] - tail_position[0]).abs == 2 || (head_position[1] - tail_position[1]).abs == 2
     # diagonal shift
     if head_position[0] > tail_position[0]
-      tail_position[0] += 1
+      new_tail_position[0] += 1
     else
-      tail_position[0] -= 1
+      new_tail_position[0] -= 1
     end
     if head_position[1] > tail_position[1]
-      tail_position[1] += 1
+      new_tail_position[1] += 1
     else
-      tail_position[1] -= 1
+      new_tail_position[1] -= 1
     end
   end
 
-  tail_position
+  new_tail_position
 end
 
 lines.each do |line|
@@ -72,10 +67,12 @@ lines.each do |line|
       raise "Unknown direction"
     end
 
+    tail_before = tail_position
     tail_position = move_tail(head_position, tail_position)
     positions_visited.add(tail_position)
   end
 end
 
+p "tail positions visited #{positions_visited.length}"
 
-puts "Tail visited total #{positions_visited.length} positions"
+
