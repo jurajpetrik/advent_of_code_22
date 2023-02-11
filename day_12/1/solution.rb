@@ -5,16 +5,7 @@ require './BFS'
 
 
 pairs = []
-# lines = File.readlines('input', chomp: true)
-
-# # Example input
-lines = [
-  "Sabqponm",
-  "abcryxxl",
-  "accszExk",
-  "acctuvwj",
-  "abdefghi"
-]
+lines = File.readlines('input', chomp: true)
 
 graph = Array.new(lines.length) { Array.new(lines.first.length) }
 
@@ -35,4 +26,4 @@ end
 
 bfs = BFS.new(graph)
 length = bfs.find_shortest_path(start, goal)
-p length
+p "shortest path is #{length}"
