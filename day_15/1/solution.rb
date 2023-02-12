@@ -2,6 +2,7 @@
 
 require 'pry'
 require 'ostruct'
+require 'set'
 
 lines = File.readlines('input', chomp: true)
 # lines = [
@@ -32,97 +33,33 @@ lines.each do |line|
   sensors_and_beacons << [OpenStruct.new({x: sensor_x, y: sensor_y}), OpenStruct.new({x: beacon_x, y: beacon_y})]
 end
 
-# used to mark the reference where a beacon cannot reside
-class Grid
-  BEACON_UNREACHABLE = "#"
-  BEACON = "B"
-  SENSOR = "S"
-  EMPTY = "."
-
-  # hack to deal with negative coordinates
-  OFFSET = 100000
-
-  def initialize
-    @grid = []
-  end
-
-  def mark_beacon_unreachable(x,y)
-    mark(x, y, BEACON_UNREACHABLE) if get(x, y) == EMPTY
-  end
-
-  def mark_beacon(x,y)
-    mark(x, y, BEACON)
-  end
-
-  def mark_sensor(x,y)
-    mark(x, y, SENSOR)
-  end
-
-  def pretty_print
-    (-2..22).each do |x|
-      (-4..26).each do |y|
-        print get(y,x)
-      end
-      print "\n"
-    end
-  end
-
-  def get(x,y)
-    x = x + OFFSET
-    y = y + OFFSET
-    row = @grid[y]
-    return EMPTY unless row
-    point = row[x]
-    point.nil? ? EMPTY : point
-  end
-
-  def count_unreachable_in_row(x)
-    x = x + OFFSET
-    row = @grid[x]
-    return row.nil? ? 0 : row.count(BEACON_UNREACHABLE)
-  end
-
-  private
-  def mark(x, y, symbol)
-    x = x + OFFSET
-    y = y + OFFSET
-    if x < 0 || y < 0
-      binding.pry
-      raise "Cannot mark a negative index in an array, #{x}, #{y}"
-    end
-    @grid[y] = [] unless @grid[y]
-    @grid[y][x] = symbol
-  end
-end
-
-grid = Grid.new
+row_number = 2000000
+sensors_in_row = Set.new
+beacons_in_row = Set.new
+unreachable_in_row = Set.new
 
 sensors_and_beacons.each do |sensor, beacon|
-  grid.mark_beacon(beacon.x, beacon.y)
-  grid.mark_sensor(sensor.x, sensor.y)
+  sensors_in_row.add(sensor.x) if sensor.y == row_number
+  beacons_in_row.add(beacon.x) if beacon.y == row_number
 end
 
-
-sensors_and_beacons.each do |sensor, beacon|
+sensors_and_beacons.each_with_index do |sensor_and_beacon, i|
+  sensor, beacon = sensor_and_beacon
   manhattan_distance = (sensor.x - beacon.x).abs + (sensor.y - beacon.y).abs
-  (0..manhattan_distance).each do |move_sideways|
-    x_left = sensor.x - move_sideways
-    x_right = sensor.x + move_sideways
-    distance_remaining = manhattan_distance - move_sideways
-      (0..distance_remaining).each do |dist|
-        y_up = sensor.y - dist
-        y_down = sensor.y + dist
-        [
-          [x_left,y_up],
-          [x_left,y_down],
-          [x_right,y_up],
-          [x_right,y_down],
-        ].each do |x,y|
-          grid.mark_beacon_unreachable(x,y)
-        end
+  move_sideways = manhattan_distance - (sensor.y - row_number).abs
+  if move_sideways >= 0
+    (0..move_sideways).each do |x_offset|
+      x_left = sensor.x - x_offset
+      x_right = sensor.x + x_offset
+      if !sensors_in_row.include?(x_left) && !beacons_in_row.include?(x_left)
+        unreachable_in_row.add(x_left)
       end
+      if !sensors_in_row.include?(x_right) && !beacons_in_row.include?(x_right)
+        unreachable_in_row.add(x_right)
+      end
+    end
   end
 end
 
-unreachable_row = 2000000
-p "unreachable in row #{unreachable_row} #{grid.count_unreachable_in_row(unreachable_row)}"
+p "unreachable in row #{row_number} #{unreachable_in_row.count}"
+# binding.pry
