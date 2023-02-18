@@ -45,13 +45,21 @@ class Screen
     piece
   end
 
+  def start_coordinates
+    OpenStruct.new(x: 2, y: @max_y + 4)
+  end
+
   def drop_piece
-    start_position = OpenStruct.new(x: 2, y: @max_y + 4)
-    piece = next_piece.new(start_position)
+    piece = next_piece.new(start_coordinates)
     while true do
       horizontal_movement = next_horizontal_movement
       position = piece.send(horizontal_movement)
-      piece.position = position if position_allowed?(position)
+
+      if position_allowed?(position)
+        piece.position = position
+      end
+
+
       position = piece.move_down_preview
       if position_allowed?(position)
         piece.position = position
@@ -67,7 +75,7 @@ class Screen
       (0..6).each do |x|
         sign = "."
         sign = "#" if get(x,y)
-        sign = "#" if piece && piece.position.any? {|p| p.x == x && p.y == y}
+        sign = "@" if piece && piece.position.any? {|p| p.x == x && p.y == y}
         print sign
       end
       print "\n"

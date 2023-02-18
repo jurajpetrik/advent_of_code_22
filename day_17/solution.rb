@@ -2,7 +2,7 @@
 require './screen'
 require 'pry'
 
-line = File.readlines('input', chomp: true)
+line = File.readlines('input', chomp: true).first
 # line = ">>><<><>><<<>><>>><<<>>><<<><<<>><>><<>>"
 s = Screen.new(line)
 2022.times do
