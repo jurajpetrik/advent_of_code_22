@@ -1,6 +1,6 @@
 #!/usr/bin/ruby
+# Solution for https://adventofcode.com/2022/day/15
 
-require 'pry'
 require 'ostruct'
 require 'set'
 require './sensor'
