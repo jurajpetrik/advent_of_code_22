@@ -1,22 +1,23 @@
-class TetrisPiece
-  attr_accessor :position
+require 'ostruct'
+class Rock
+  attr_accessor :coordinates
   def move_right_preview
-    @position.map{|p| OpenStruct.new({x: p.x+1, y: p.y}) }
+    @coordinates.map{|p| OpenStruct.new({x: p.x+1, y: p.y})}
   end
 
   def move_left_preview
-    @position.map{|p| OpenStruct.new({x: p.x-1, y: p.y}) }
+    @coordinates.map{|p| OpenStruct.new({x: p.x-1, y: p.y})}
   end
 
   def move_down_preview
-    @position.map{|p| OpenStruct.new({x: p.x, y: p.y-1}) }
+    @coordinates.map{|p| OpenStruct.new({x: p.x, y: p.y-1})}
   end
 end
 
-class HorizontalLine < TetrisPiece
-  # tetris piece shape ####
+class HorizontalLine < Rock
+  # rock shape ####
   def initialize(left_bottom_edge)
-    @position = [
+    @coordinates = [
       OpenStruct.new({x: left_bottom_edge.x, y: left_bottom_edge.y}),
       OpenStruct.new({x: left_bottom_edge.x+1, y: left_bottom_edge.y}),
       OpenStruct.new({x: left_bottom_edge.x+2, y: left_bottom_edge.y}),
@@ -25,13 +26,13 @@ class HorizontalLine < TetrisPiece
   end
 end
 
-class VerticalLine < TetrisPiece
-  # tetris piece shape #
+class VerticalLine < Rock
+  # rock shape #
   #                    #
   #                    #
   #                    #
   def initialize(left_bottom_edge)
-    @position = [
+    @coordinates = [
       OpenStruct.new({x: left_bottom_edge.x, y: left_bottom_edge.y}),
       OpenStruct.new({x: left_bottom_edge.x, y: left_bottom_edge.y + 1}),
       OpenStruct.new({x: left_bottom_edge.x, y: left_bottom_edge.y + 2}),
@@ -40,12 +41,12 @@ class VerticalLine < TetrisPiece
   end
 end
 
-class Plus < TetrisPiece
-  # tetris piece shape #
+class Plus < Rock
+  # rock shape #
   #                   ###
   #                    #
   def initialize(left_bottom_edge)
-    @position = [
+    @coordinates = [
       OpenStruct.new({x: left_bottom_edge.x + 1, y: left_bottom_edge.y}),
       OpenStruct.new({x: left_bottom_edge.x, y: left_bottom_edge.y + 1}),
       OpenStruct.new({x: left_bottom_edge.x + 1, y: left_bottom_edge.y + 1}),
@@ -55,12 +56,12 @@ class Plus < TetrisPiece
   end
 end
 
-class L < TetrisPiece
-  # tetris piece shape #
+class L < Rock
+  # rock shape #
   #                    #
   #                  ###
   def initialize(left_bottom_edge)
-    @position = [
+    @coordinates = [
       OpenStruct.new({x: left_bottom_edge.x, y: left_bottom_edge.y}),
       OpenStruct.new({x: left_bottom_edge.x + 1, y: left_bottom_edge.y}),
       OpenStruct.new({x: left_bottom_edge.x + 2, y: left_bottom_edge.y}),
@@ -70,12 +71,12 @@ class L < TetrisPiece
   end
 end
 
-class Square < TetrisPiece
-  # tetris piece shape ##
+class Square < Rock
+  # rock shape ##
   #                    ##
   #
   def initialize(left_bottom_edge)
-    @position = [
+    @coordinates = [
       OpenStruct.new({x: left_bottom_edge.x, y: left_bottom_edge.y}),
       OpenStruct.new({x: left_bottom_edge.x + 1, y: left_bottom_edge.y}),
       OpenStruct.new({x: left_bottom_edge.x, y: left_bottom_edge.y+1}),
